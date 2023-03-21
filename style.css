@@ -1,12 +1,25 @@
+h1 {
+    margin: 0;
+}
+
 body {
     width: 50%;
     margin: auto;
 }
 
 input {
-    width: 90%;
+    width: 100%;
+}
+
+button {
+    margin-left: auto;
 }
 
 .done {
     text-decoration: line-through;
+}
+
+.header {
+    display: flex;
+    align-items: center;
 }
