@@ -1,0 +1,12 @@
+body {
+    width: 50%;
+    margin: auto;
+}
+
+input {
+    width: 90%;
+}
+
+.done {
+    text-decoration: line-through;
+}
