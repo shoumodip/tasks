@@ -1,56 +1,38 @@
 const tasks = document.getElementById("tasks")
 
 function tasksSave() {
-    localStorage.setItem("tasks", Array.from(tasks.children, function (v) {
-        return (v.classList.contains("done") ? "#" : " ") + v.childNodes[0].nodeValue
-    }).join("\n"))
+    localStorage["tasks"] = Array.from(tasks.children, (e) => e.childNodes[0].value).join("\n")
 }
 
 function tasksPush(str) {
     if (str == "") {
         return null
     }
+    const task = document.createElement("div")
 
-    const task = document.createElement("li")
-    task.appendChild(document.createTextNode(str))
-    task.addEventListener("click", function () {
-        task.classList.toggle("done")
+    const text = document.createElement("input")
+    text.value = str
+    text.classList = "readonly"
+    task.appendChild(text)
+
+    const done = document.createElement("button")
+    done.innerText = "Done"
+    done.addEventListener("click", () => {
+        tasks.removeChild(task)
         tasksSave()
     })
-    task.title = "Toggle whether task is done"
+    task.appendChild(done)
+
     tasks.appendChild(task)
     return task
 }
 
-document.getElementById("input").addEventListener("keyup", function (event) {
+document.getElementById("input").addEventListener("keyup", (event) => {
     if (event.keyCode == 13) {
-        tasksPush(this.value)
-        this.value = ""
+        tasksPush(event.target.value)
+        event.target.value = ""
         tasksSave()
     }
 })
 
-document.getElementById("clear").addEventListener("click", function () {
-    var removal = []
-    tasks.childNodes.forEach(function (task) {
-        if (task.classList.contains("done")) {
-            removal.push(task)
-        }
-    })
-
-    removal.forEach(function (task) {
-        tasks.removeChild(task)
-    })
-    tasksSave()
-})
-
-document.body.style.cursor = "default"
-
-localStorage.getItem("tasks").split("\n").forEach(function (task) {
-    const done = task.charAt(0) == "#"
-    task = task.substring(1)
-    task = tasksPush(task)
-    if (done) {
-        task.classList.toggle("done")
-    }
-})
+String.prototype.split.call(localStorage["tasks"], "\n").forEach(tasksPush)
