@@ -1,38 +1,39 @@
+const input = document.getElementById("input")
 const tasks = document.getElementById("tasks")
 
 function tasksSave() {
-    localStorage["tasks"] = Array.from(tasks.children, (e) => e.childNodes[0].value).join("\n")
+    localStorage["tasks"] = Array.from(tasks.children, (task) => task.children[0].value).join("\n")
 }
 
-function tasksPush(str) {
-    if (str == "") {
-        return null
+function tasksPush(value) {
+    if (value === "") {
+        return
     }
-    const task = document.createElement("div")
 
-    const text = document.createElement("input")
-    text.value = str
-    text.classList = "readonly"
-    task.appendChild(text)
+    const div = document.createElement("div")
+    const input = document.createElement("input")
+    const button = document.createElement("button")
 
-    const done = document.createElement("button")
-    done.innerText = "Done"
-    done.addEventListener("click", () => {
-        tasks.removeChild(task)
+    input.value = value
+    input.onchange = tasksSave
+
+    button.innerText = "Done"
+    button.onclick = () => {
+        tasks.removeChild(div)
         tasksSave()
-    })
-    task.appendChild(done)
+    }
 
-    tasks.appendChild(task)
-    return task
+    div.appendChild(input)
+    div.appendChild(button)
+    tasks.appendChild(div)
 }
 
-document.getElementById("input").addEventListener("keyup", (event) => {
-    if (event.keyCode == 13) {
-        tasksPush(event.target.value)
-        event.target.value = ""
+input.onkeyup = (event) => {
+    if (event.key == "Enter") {
+        tasksPush(input.value)
         tasksSave()
+        input.value = ""
     }
-})
+}
 
-String.prototype.split.call(localStorage["tasks"], "\n").forEach(tasksPush)
+(localStorage["tasks"] || "").split("\n").forEach(tasksPush)
